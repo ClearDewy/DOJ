@@ -1,0 +1,4 @@
+/doj-deploy/src/mysql/docker-compose.yml
+/doj-deploy/.idea/
+/doj-deploy/src/mysql/data/
+/doj-go/.idea/
