@@ -6,7 +6,7 @@ package controller
 
 import (
 	"doj-go/DataBackup/sql"
-	"doj-go/DataBackup/utils"
+	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -22,7 +22,7 @@ func getProblemList(c *gin.Context) {
 
 	problemList, err := sql.GetProblemList(oj, difficulty, keyword, tags, limit, currentPage)
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "获取题目列表失败",
 		})
@@ -35,7 +35,7 @@ func getProblemDetail(c *gin.Context) {
 	problem_id := c.Query("problem_id")
 	pstmt, err := sql.GetProblemDetail(problem_id)
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "获取题目信息失败",
 		})

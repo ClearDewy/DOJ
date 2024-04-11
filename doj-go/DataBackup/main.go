@@ -12,28 +12,26 @@ import (
 	"doj-go/DataBackup/redis"
 	"doj-go/DataBackup/sql"
 	"fmt"
+	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"log"
 )
 
 var (
 	ginRoute *gin.Engine
-	conf     = &config.Config{}
 )
 
 func main() {
-	err := conf.LoadEnvDefault()
+	err := config.Conf.LoadEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
 	// 初始化日志格式
-	config.InitLogrus()
-	logrus.Info("config loaded:", conf)
+	logrus.Info("config loaded:", config.Conf)
 
-	sql.Init(conf)
-	redis.Init(conf)
-	etcd.Init(conf)
+	sql.Init(config.Conf)
+	redis.Init(config.Conf)
+	etcd.Init(config.Conf)
 	err = judge.Init()
 	if err == nil {
 		go judge.Start()
@@ -42,6 +40,6 @@ func main() {
 	}
 	ginRoute = gin.Default()
 	controller.Init(ginRoute)
-	logrus.Info(fmt.Sprintf(":%s", conf.BackendServerPort))
-	ginRoute.Run(fmt.Sprintf(":%s", conf.BackendServerPort))
+	logrus.Info(fmt.Sprintf(":%s", config.Conf.BackendServerPort))
+	ginRoute.Run(fmt.Sprintf(":%s", config.Conf.BackendServerPort))
 }

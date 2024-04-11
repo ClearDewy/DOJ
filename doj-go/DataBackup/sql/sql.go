@@ -7,10 +7,9 @@ package sql
 import (
 	"database/sql"
 	"doj-go/DataBackup/config"
-	"doj-go/DataBackup/utils"
 	"fmt"
+	"github.com/ClearDewy/go-pkg/logrus"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -21,9 +20,9 @@ func Init(conf *config.Config) {
 	logrus.Info(fmt.Sprintf("%s:%s@tcp(%s)/doj", conf.MysqlUsername, conf.MysqlPassword, conf.MysqlAddr))
 	var err error
 	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/doj", conf.MysqlUsername, conf.MysqlPassword, conf.MysqlAddr))
-	utils.HandleError(err, "数据库连接失败")
+	logrus.ErrorM(err, "数据库连接失败")
 	err = db.Ping()
-	utils.HandleError(err, "数据库Ping失败")
+	logrus.ErrorM(err, "数据库Ping失败")
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 }

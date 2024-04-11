@@ -6,7 +6,7 @@ package sql
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"github.com/ClearDewy/go-pkg/logrus"
 	"strings"
 )
 

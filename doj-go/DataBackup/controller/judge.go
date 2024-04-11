@@ -7,7 +7,8 @@ package controller
 import (
 	"doj-go/DataBackup/judge"
 	"doj-go/DataBackup/sql"
-	"doj-go/DataBackup/utils"
+	"doj-go/jspb"
+	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -22,7 +23,7 @@ func submitProblemJudge(c *gin.Context) {
 	spj := &SubmitProblemJudgeType{}
 	err := c.BindJSON(spj)
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "提交代码失败",
 		})
@@ -32,7 +33,7 @@ func submitProblemJudge(c *gin.Context) {
 	user_info := value.(sql.UserInfoType)
 	pj, err := sql.GetProblemJudgeByProblemId(spj.ProblemId)
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "提交代码失败",
 		})
@@ -48,18 +49,18 @@ func submitProblemJudge(c *gin.Context) {
 		Lid:       spj.Lid,
 	})
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "提交代码失败",
 		})
 		return
 	}
 
-	judge.AddCommonProblemJudge(&judge.JudgeItemType{
+	judge.AddCommonProblemJudge(&jspb.JudgeItem{
 		Uid:         string(user_info.Uid),
-		Pid:         pj.Pid,
-		Jid:         int(jid),
-		Parallelism: pj.Parallelism,
+		Pid:         int32(pj.Pid),
+		Jid:         int32(int(jid)),
+		Parallelism: int32(pj.Parallelism),
 	})
 
 	c.JSON(http.StatusOK, gin.H{

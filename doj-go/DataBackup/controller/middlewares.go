@@ -7,6 +7,7 @@ package controller
 import (
 	"doj-go/DataBackup/sql"
 	"doj-go/DataBackup/utils"
+	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"
 
 	"net/http"
@@ -18,7 +19,7 @@ func requireAuth(c *gin.Context) {
 	token := c.GetHeader(AUTHORIZATION)
 	jwtParse, err := utils.JwtParse(token)
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"msg": "token解析失败",
 		})
@@ -30,7 +31,7 @@ func requireAuth(c *gin.Context) {
 		if jwtParse.ExpiresAt.Before(time.Now().Add(utils.ExpireTime)) {
 			newToken, err := utils.JwtGenerate(jwtParse.Uid)
 			if err != nil {
-				utils.HandleError(err, "")
+				logrus.ErrorM(err, "")
 			}
 			c.Header(AUTHORIZATION, newToken)
 		} else {
@@ -42,7 +43,7 @@ func requireAuth(c *gin.Context) {
 	}
 	userInfo, err := sql.GetUserInfoByUid(jwtParse.Uid)
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"msg": "用户不存在，请重新登录",
 		})
@@ -65,7 +66,7 @@ func tryAuth(c *gin.Context) {
 		if jwtParse.ExpiresAt.Before(time.Now().Add(utils.ExpireTime)) {
 			newToken, err := utils.JwtGenerate(jwtParse.Uid)
 			if err != nil {
-				utils.HandleError(err, "")
+				logrus.ErrorM(err, "")
 			}
 			c.Header(AUTHORIZATION, newToken)
 		} else {

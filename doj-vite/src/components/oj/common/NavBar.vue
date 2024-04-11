@@ -73,7 +73,7 @@
         >{{ $t('NavBar_Login') }}
         </el-button>
         <el-button
-            v-if="web_state.websiteConfig.register"
+            v-if="web_state.websiteConfig.allowRegister"
             round
             @click="web_state.modalStatus={mode: 'register',visible: true}"
             style="margin-left: 5px"

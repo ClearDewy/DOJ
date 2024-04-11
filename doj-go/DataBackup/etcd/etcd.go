@@ -7,8 +7,8 @@ package etcd
 import (
 	"context"
 	"doj-go/DataBackup/config"
-	"doj-go/DataBackup/utils"
 	"encoding/json"
+	"github.com/ClearDewy/go-pkg/logrus"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"time"
 )
@@ -34,7 +34,7 @@ func Init(conf *config.Config) {
 		Password:    conf.EtcdRootPassword,
 	})
 	if err != nil {
-		utils.HandleError(err, "etcd 连接失败")
+		logrus.ErrorM(err, "etcd 连接失败")
 	}
 	initConfig()
 }

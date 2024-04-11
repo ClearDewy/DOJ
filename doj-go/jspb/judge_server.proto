@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package jpb;
+
+option go_package = "doj-go/jspb";
+
+
+service JudgeServer{
+  rpc Judge(JudgeItem) returns (google.protobuf.Empty);
+}
+
+message JudgeItem{
+  string uid = 1;
+  int32 pid = 2;
+  int32 jid = 3;
+  int32 parallelism = 4;
+}

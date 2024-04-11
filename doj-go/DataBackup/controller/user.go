@@ -10,6 +10,7 @@ import (
 	"doj-go/DataBackup/sql"
 	"doj-go/DataBackup/utils"
 	"encoding/json"
+	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"
 
 	"net/http"
@@ -54,7 +55,7 @@ type UserInfoType struct {
 func login(c *gin.Context) {
 	var loginDto = LoginType{}
 	if err := c.BindJSON(&loginDto); err != nil {
-		utils.HandleError(err, "参数校验失败")
+		logrus.ErrorM(err, "参数校验失败")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": err.Error(),
 		})
@@ -80,7 +81,7 @@ func login(c *gin.Context) {
 	}
 	userInfoDao, err := sql.GetUserInfoByUsername(loginDto.Username)
 	if err != nil {
-		utils.HandleError(err, "")
+		logrus.ErrorM(err, "")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"msg": "用户名或密码错误",
 		})
@@ -89,7 +90,7 @@ func login(c *gin.Context) {
 	if string(userInfoDao.Password) == loginDto.Password {
 		token, err := utils.JwtGenerate(string(userInfoDao.Uid))
 		if err != nil {
-			utils.HandleError(err, "")
+			logrus.ErrorM(err, "")
 			c.JSON(http.StatusBadRequest, gin.H{
 				"msg": "生成 token 失败",
 			})
