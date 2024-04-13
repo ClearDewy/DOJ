@@ -5,41 +5,71 @@
 package main
 
 import (
+	"context"
 	"doj-go/DataBackup/config"
 	"doj-go/DataBackup/controller"
-	"doj-go/DataBackup/etcd"
+	"doj-go/DataBackup/internal/etcd"
+	"doj-go/DataBackup/internal/redis"
+	"doj-go/DataBackup/internal/sql"
 	"doj-go/DataBackup/judge"
-	"doj-go/DataBackup/redis"
-	"doj-go/DataBackup/sql"
-	"fmt"
 	"github.com/ClearDewy/go-pkg/logrus"
-	"github.com/gin-gonic/gin"
-	"log"
-)
-
-var (
-	ginRoute *gin.Engine
+	"golang.org/x/sync/errgroup"
+	"os"
+	"os/signal"
+	"time"
 )
 
 func main() {
+
 	err := config.Conf.LoadEnv()
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
-	// 初始化日志格式
-	logrus.Info("config loaded:", config.Conf)
+	logrus.Info("Config:", config.Conf)
+	servers := []func() (func() error, func(ctx context.Context) error){
+		redis.Init,
+		sql.Init,
+		etcd.Init,
+		judge.Init,
+		controller.Init,
+	}
 
-	sql.Init(config.Conf)
-	redis.Init(config.Conf)
-	etcd.Init(config.Conf)
-	err = judge.Init()
-	if err == nil {
-		go judge.Start()
-	} else {
-		logrus.Error(err, "评测机器初始化失败")
+	sig := make(chan os.Signal, len(servers)+1)
+	stops := make([]func(ctx context.Context) error, 0, len(servers))
+
+	for _, init := range servers {
+		start, stop := init()
+		if start != nil {
+			go func() {
+				err := start()
+				logrus.ErrorM(err, "")
+				sig <- os.Interrupt
+			}()
+		}
+		if stop != nil {
+			stops = append(stops, stop)
+		}
 	}
-	ginRoute = gin.Default()
-	controller.Init(ginRoute)
-	logrus.Info(fmt.Sprintf(":%s", config.Conf.BackendServerPort))
-	ginRoute.Run(fmt.Sprintf(":%s", config.Conf.BackendServerPort))
+
+	// Graceful shutdown...
+	signal.Notify(sig, os.Interrupt)
+	<-sig
+	signal.Reset(os.Interrupt)
+
+	logrus.Info("后台服务关闭中……")
+
+	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*3)
+	defer cancel()
+	var eg errgroup.Group
+	for _, s := range stops {
+		eg.Go(func() error {
+			return s(ctx)
+		})
+	}
+
+	go func() {
+		logrus.Info("后台服务关闭完成", eg.Wait())
+		cancel()
+	}()
+	<-ctx.Done()
 }

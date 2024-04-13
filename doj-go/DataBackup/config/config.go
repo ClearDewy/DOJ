@@ -6,6 +6,7 @@ package config
 
 import (
 	"github.com/koding/multiconfig"
+	"time"
 )
 
 var Conf = &Config{}
@@ -19,6 +20,8 @@ type Config struct {
 	RedisPassword     string `default:"doj123456"`
 	EtcdAddr          string `default:"127.0.0.1:2379"`
 	EtcdRootPassword  string `default:"doj123456"`
+
+	JudgeServerExpireTime time.Duration `default:"1h"`
 }
 
 func (c *Config) LoadEnv() error {

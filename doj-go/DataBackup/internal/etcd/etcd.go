@@ -25,18 +25,20 @@ const (
 	JUDGE_CONFIG            = "/config/judge"
 )
 
-func Init(conf *config.Config) {
+func Init() (func() error, func(ctx context.Context) error) {
 	var err error
 	Client, err = clientv3.New(clientv3.Config{
-		Endpoints:   []string{conf.EtcdAddr},
+		Endpoints:   []string{config.Conf.EtcdAddr},
 		DialTimeout: 5 * time.Second,
 		Username:    "root",
-		Password:    conf.EtcdRootPassword,
+		Password:    config.Conf.EtcdRootPassword,
 	})
 	if err != nil {
-		logrus.ErrorM(err, "etcd 连接失败")
+		logrus.FatalM(err, "etcd 连接失败")
 	}
 	initConfig()
+
+	return nil, nil
 }
 
 func initConfig() {

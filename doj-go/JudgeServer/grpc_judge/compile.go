@@ -8,6 +8,7 @@ import (
 	"context"
 	"doj-go/JudgeServer/config"
 	"doj-go/JudgeServer/sandbox"
+	"fmt"
 	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/criyle/go-judge/pb"
 	"os"
@@ -15,6 +16,46 @@ import (
 	"strconv"
 	"strings"
 )
+
+func (js *JudgeServer) Compile() error {
+	// 将提交状态改为编译中
+	err := js.UpdateJudgeStatus(Compiling)
+	if err != nil {
+		return err
+	}
+	// 编译用户程序
+	// 语言需要编译
+	if js.JudgeProc.LangCmd.Compile != nil {
+		err = js.DefaultCompile()
+		if err != nil {
+			logrus.ErrorM(err, "编译题目信息失败")
+			return err
+		}
+		if js.JudgeProc.CompileResult.Status != pb.Response_Result_Accepted {
+			js.JudgeStatus.Message = string(js.JudgeProc.CompileResult.Files["stderr"])
+			return js.UpdateJudgeStatus(CompileError)
+		}
+		//需要编译即已经编译过了，运行文件为缓存中的结果
+		js.JudgeProc.RunCopyInFile = &pb.Request_File{
+			File: &pb.Request_File_Cached{
+				Cached: &pb.Request_CachedFile{
+					FileID: js.JudgeProc.CompileResult.FileIDs[js.JudgeProc.LangCmd.ExePath],
+				},
+			},
+		}
+	} else {
+		// 如果不需要编译，运行文件就是代码
+		js.JudgeProc.RunCopyInFile = &pb.Request_File{
+			File: &pb.Request_File_Memory{
+				Memory: &pb.Request_MemoryFile{
+					Content: []byte(js.JudgeProc.JudgeInfo.Code),
+				},
+			},
+		}
+	}
+
+	return nil
+}
 
 func (js *JudgeServer) DefaultCompile() error {
 	judgeProc := js.JudgeProc
@@ -91,7 +132,8 @@ func (js *JudgeServer) DefaultCompile() error {
 }
 
 // spj或者interactive程序编译
-func (js *JudgeServer) SpjOrInteractCompile() (*pb.Response_Result, error) {
+func (js *JudgeServer) SpjOrInteractCompile() error {
+
 	judgeProc := js.JudgeProc
 	problem := judgeProc.Problem
 	judgeProc.SpjCmd = LanguageList[judgeProc.Problem.SpjLid]
@@ -100,18 +142,16 @@ func (js *JudgeServer) SpjOrInteractCompile() (*pb.Response_Result, error) {
 	_, err := os.Stat(dir)
 	// 已经存在
 	if err == nil {
-		return &pb.Response_Result{
-			Status: pb.Response_Result_Accepted,
-		}, err
+		return nil
 	} else {
 		// 除不存在以外其他错误
 		if !os.IsNotExist(err) {
-			return nil, err
+			return err
 		}
 		// 不存在，首先删除该题目其他程序版本
 		err = os.RemoveAll(filepath.Dir(dir))
 		if err != nil {
-			return nil, err
+			return err
 
 		}
 		langCmd := LanguageList[problem.SpjLid]
@@ -172,22 +212,27 @@ func (js *JudgeServer) SpjOrInteractCompile() (*pb.Response_Result, error) {
 			Cmd: []*pb.Request_CmdType{cmd},
 		})
 		if err != nil {
-			return nil, err
+			return err
+		}
+		if result.Results[0].Status != pb.Response_Result_Accepted {
+			err = fmt.Errorf(result.Results[0].Error)
+			logrus.ErrorM(err, "SpjOrInteractCompile Error")
+			return err
 		}
 		err = os.MkdirAll(dir, 0777)
 		if err != nil {
 			logrus.ErrorM(err, "创建存放"+string(problem.JudgeMode)+"文件夹失败")
-
-			return result.Results[0], nil
+			return err
 		}
 		in, err := os.Create(judgeProc.SpjPath)
 		if err != nil {
 			logrus.ErrorM(err, "创建"+string(problem.JudgeMode)+"文件失败")
-			return result.Results[0], nil
+			return err
 		}
 		defer in.Close()
-		in.Write(result.Results[0].Files[string(problem.JudgeMode)])
+		_, err = in.Write(result.Results[0].Files[langCmd.ExePath])
+		delete(result.Results[0].Files, langCmd.ExePath)
 
-		return result.Results[0], nil
+		return err
 	}
 }

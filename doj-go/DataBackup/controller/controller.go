@@ -5,10 +5,14 @@
 package controller
 
 import (
+	"context"
+	"doj-go/DataBackup/config"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
-func Init(r *gin.Engine) {
+func Init() (func() error, func(ctx context.Context) error) {
+	r := gin.Default()
 	r.Static("/api/public", "./doj/public")
 
 	// 普通请求模块
@@ -33,5 +37,7 @@ func Init(r *gin.Engine) {
 	{
 		judgeGroup.POST("/submit-problem-judge", submitProblemJudge)
 	}
-
+	return func() error {
+		return r.Run(fmt.Sprintf(":%s", config.Conf.BackendServerPort))
+	}, nil
 }

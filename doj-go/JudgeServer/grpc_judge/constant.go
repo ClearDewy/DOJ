@@ -43,15 +43,18 @@ const (
 )
 
 type JudgeProcessType struct {
-	LangCmd       *LanguageType
-	Problem       *sql2.ProblemJudge
-	JudgeInfo     *sql2.JudgeInfoType
-	LangLimit     *sql2.LanguageLimitType
-	CaseDir       string
-	UserDir       string
-	RunCopyInFile *pb.Request_File
-	CompileResult *pb.Response_Result
-	RunResults    []*pb.Response_Result
-	SpjCmd        *LanguageType
-	SpjPath       string
+	LangCmd            *LanguageType
+	Problem            *sql2.ProblemJudge
+	JudgeInfo          *sql2.JudgeInfoType
+	LangLimit          *sql2.LanguageLimitType
+	CaseDir            string
+	UserDir            string
+	RunCopyInFile      *pb.Request_File
+	CheckCopyInFile    *pb.Request_File
+	CompileResult      *pb.Response_Result
+	CheckCompileResult *pb.Response_Result
+	RunResults         []*pb.Response_Result
+	CheckResults       []*pb.Response_Result
+	SpjCmd             *LanguageType
+	SpjPath            string
 }

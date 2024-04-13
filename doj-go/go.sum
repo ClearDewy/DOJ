@@ -2,6 +2,10 @@ github.com/BurntSushi/toml v1.3.2 h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8
 github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/ClearDewy/go-pkg v0.0.0-20240410112055-bc3553e1917f h1:YMF943wfqKuXmENrbXX8uxBA9FDLyY3OdO32EoeXYF8=
 github.com/ClearDewy/go-pkg v0.0.0-20240410112055-bc3553e1917f/go.mod h1:5KVk0OQgUwTyYVyLXWec6YoQ7KpJKNskVYr7ayUbq7c=
+github.com/ClearDewy/go-pkg v0.0.0-20240410113826-824decaee911 h1:NqJisZd6K5dwM/zkC8WQNU5ENwbBFrH1ahl/EuYT+PU=
+github.com/ClearDewy/go-pkg v0.0.0-20240410113826-824decaee911/go.mod h1:5KVk0OQgUwTyYVyLXWec6YoQ7KpJKNskVYr7ayUbq7c=
+github.com/ClearDewy/go-pkg v0.0.0-20240412065204-22de283fb747 h1:7sONO+hRgdWcfbHSyI1NL30OGEMCYpVXq1CxnEfNkVw=
+github.com/ClearDewy/go-pkg v0.0.0-20240412065204-22de283fb747/go.mod h1:5KVk0OQgUwTyYVyLXWec6YoQ7KpJKNskVYr7ayUbq7c=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
 github.com/bsm/ginkgo/v2 v2.12.0/go.mod h1:SwYbGRRDovPVboqFv0tPTcG1sN61LM1Z4ARdbAV9g4c=
 github.com/bsm/gomega v1.27.10 h1:yeMWxP2pV2fG3FgAODIY8EiRE3dy0aeFYt4l7wh6yKA=

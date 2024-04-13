@@ -5,7 +5,7 @@
 package controller
 
 import (
-	"doj-go/DataBackup/sql"
+	"doj-go/DataBackup/internal/sql"
 	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"
 	"net/http"

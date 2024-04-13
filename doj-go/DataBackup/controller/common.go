@@ -7,7 +7,7 @@ package controller
 import (
 	"context"
 	"doj-go/DataBackup/config"
-	"doj-go/DataBackup/etcd"
+	"doj-go/DataBackup/internal/etcd"
 	"encoding/json"
 	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"

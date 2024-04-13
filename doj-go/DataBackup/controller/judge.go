@@ -5,8 +5,8 @@
 package controller
 
 import (
+	sql2 "doj-go/DataBackup/internal/sql"
 	"doj-go/DataBackup/judge"
-	"doj-go/DataBackup/sql"
 	"doj-go/jspb"
 	"github.com/ClearDewy/go-pkg/logrus"
 	"github.com/gin-gonic/gin"
@@ -30,8 +30,8 @@ func submitProblemJudge(c *gin.Context) {
 		return
 	}
 	value, _ := c.Get(USERINFO)
-	user_info := value.(sql.UserInfoType)
-	pj, err := sql.GetProblemJudgeByProblemId(spj.ProblemId)
+	user_info := value.(sql2.UserInfoType)
+	pj, err := sql2.GetProblemJudgeByProblemId(spj.ProblemId)
 	if err != nil {
 		logrus.ErrorM(err, "")
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -40,7 +40,7 @@ func submitProblemJudge(c *gin.Context) {
 		return
 	}
 
-	jid, err := sql.AddJudge(&sql.AddJudgeType{
+	jid, err := sql2.AddJudge(&sql2.AddJudgeType{
 		Uid:       string(user_info.Uid),
 		Username:  string(user_info.Username),
 		Pid:       pj.Pid,

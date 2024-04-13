@@ -5,16 +5,18 @@
 package redis
 
 import (
+	"context"
 	"doj-go/DataBackup/config"
 	"github.com/redis/go-redis/v9"
 )
 
 var Rdb *redis.Client
 
-func Init(conf *config.Config) {
-	Rdb = redis.NewClient(&redis.Options{
-		Addr:     conf.RedisAddr,
-		Password: conf.RedisPassword,
-	})
+func Init() (func() error, func(ctx context.Context) error) {
 
+	Rdb = redis.NewClient(&redis.Options{
+		Addr:     config.Conf.RedisAddr,
+		Password: config.Conf.RedisPassword,
+	})
+	return nil, nil
 }

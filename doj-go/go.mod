@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.22.2
 
 require (
-	github.com/ClearDewy/go-pkg v0.0.0-20240410112055-bc3553e1917f
+	github.com/ClearDewy/go-pkg v0.0.0-20240412065204-22de283fb747
 	github.com/criyle/go-judge v1.8.2
 	github.com/criyle/go-sandbox v0.10.1
 	github.com/gin-gonic/gin v1.9.1

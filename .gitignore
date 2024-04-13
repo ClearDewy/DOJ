@@ -3,3 +3,5 @@
 /doj-deploy/src/mysql/data/
 .idea
 /doj-go/.idea
+/doj-deploy/data/
+/doj-deploy/docker-compose.yml

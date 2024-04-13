@@ -7,51 +7,52 @@ package sql
 import (
 	"fmt"
 	"github.com/ClearDewy/go-pkg/logrus"
+	dSql "github.com/ClearDewy/go-pkg/sql"
 	"strings"
 )
 
 type TagType struct {
-	Id    int    `json:"id"`
-	Name  String `json:"name"`
-	Color String `json:"color"`
+	Id    int         `json:"id"`
+	Name  dSql.String `json:"name"`
+	Color dSql.String `json:"color"`
 }
 
 type ProblemListType struct {
-	Problem_id String     `json:"problem_id"`
-	Title      String     `json:"title"`
-	Difficulty int        `json:"difficulty"`
-	Tags       []*TagType `json:"tags"`
-	MyStatus   int        `json:"myStatus"`
-	Total      int        `json:"total"`
-	Ac         int        `json:"ac"`
-	Wa         int        `json:"wa"`
-	Tle        int        `json:"tle"`
-	Mle        int        `json:"mle"`
-	Re         int        `json:"re"`
-	Pe         int        `json:"pe"`
-	Ce         int        `json:"ce"`
-	Se         int        `json:"se"`
+	Problem_id dSql.String `json:"problem_id"`
+	Title      dSql.String `json:"title"`
+	Difficulty int         `json:"difficulty"`
+	Tags       []*TagType  `json:"tags"`
+	MyStatus   int         `json:"myStatus"`
+	Total      int         `json:"total"`
+	Ac         int         `json:"ac"`
+	Wa         int         `json:"wa"`
+	Tle        int         `json:"tle"`
+	Mle        int         `json:"mle"`
+	Re         int         `json:"re"`
+	Pe         int         `json:"pe"`
+	Ce         int         `json:"ce"`
+	Se         int         `json:"se"`
 }
 
 type ProblemLanguageType struct {
-	Lid          int    `json:"lid"`
-	Content_type String `json:"content_type"`
-	Name         String `json:"name"`
-	Time_limit   int    `json:"time_limit"`
-	Memory_limit int    `json:"memory_limit"`
+	Lid          int         `json:"lid"`
+	Content_type dSql.String `json:"content_type"`
+	Name         dSql.String `json:"name"`
+	Time_limit   int         `json:"time_limit"`
+	Memory_limit int         `json:"memory_limit"`
 }
 
 type ProblemDetailType struct {
-	Title  String `json:"title"`
-	Author String `json:"author"`
+	Title  dSql.String `json:"title"`
+	Author dSql.String `json:"author"`
 
-	Description String                 `json:"description"`
-	Input       String                 `json:"input"`
-	Output      String                 `json:"output"`
-	Examples    String                 `json:"examples"`
-	Oj          String                 `json:"oj"`
-	Hint        String                 `json:"hint"`
-	Source      String                 `json:"source"`
+	Description dSql.String            `json:"description"`
+	Input       dSql.String            `json:"input"`
+	Output      dSql.String            `json:"output"`
+	Examples    dSql.String            `json:"examples"`
+	Oj          dSql.String            `json:"oj"`
+	Hint        dSql.String            `json:"hint"`
+	Source      dSql.String            `json:"source"`
 	Tags        []*TagType             `json:"tags"`
 	Languages   []*ProblemLanguageType `json:"languages"`
 }

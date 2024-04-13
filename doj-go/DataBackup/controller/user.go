@@ -6,8 +6,8 @@ package controller
 
 import (
 	"context"
-	"doj-go/DataBackup/redis"
-	"doj-go/DataBackup/sql"
+	"doj-go/DataBackup/internal/redis"
+	"doj-go/DataBackup/internal/sql"
 	"doj-go/DataBackup/utils"
 	"encoding/json"
 	"github.com/ClearDewy/go-pkg/logrus"
